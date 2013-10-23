@@ -2,6 +2,8 @@
  * L.Mixin.Events is used to add custom events functionality to Leaflet classes.
  */
 
+ // jshint camelcase: false
+
 var eventsKey = '_leaflet_events';
 
 L.Mixin = {};
@@ -14,8 +16,8 @@ L.Mixin.Events = {
 		if (L.Util.invokeEach(types, this.addEventListener, this, fn, context)) { return this; }
 
 		var events = this[eventsKey] = this[eventsKey] || {},
-		    contextId = context && L.stamp(context),
-		    i, len, event, type, indexKey, indexLenKey, typeIndex;
+		
+		    i, len, event, type, indexKey, indexLenKey, typeIndex, contextId;
 
 		// types can be a string of space-separated words
 		types = L.Util.splitWords(types);
@@ -33,6 +35,8 @@ L.Mixin.Events = {
 
 				indexKey = type + '_idx';
 				indexLenKey = indexKey + '_len';
+
+				contextId = context && context._leaflet_id;
 
 				typeIndex = events[indexKey] = events[indexKey] || {};
 
@@ -74,12 +78,14 @@ L.Mixin.Events = {
 		if (L.Util.invokeEach(types, this.removeEventListener, this, fn, context)) { return this; }
 
 		var events = this[eventsKey],
-		    contextId = context && L.stamp(context),
-		    i, len, type, listeners, j, indexKey, indexLenKey, typeIndex, removed;
+		    
+		    i, len, type, listeners, j, indexKey, indexLenKey, typeIndex, removed, contextId;
 
 		types = L.Util.splitWords(types);
 
 		for (i = 0, len = types.length; i < len; i++) {
+			contextId = context && context._leaflet_id;
+
 			type = types[i];
 			indexKey = type + '_idx';
 			indexLenKey = indexKey + '_len';
